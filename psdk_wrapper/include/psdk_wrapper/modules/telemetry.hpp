@@ -59,6 +59,7 @@
 #include "psdk_interfaces/msg/rtk_yaw.hpp"
 #include "psdk_interfaces/msg/single_battery_info.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
+#include "geometry_msgs/msg/quaternion_stamped.hpp"
 
 //brain_box_msgs
 #include "brain_box_msgs/msg/control_mode.hpp"
@@ -69,7 +70,7 @@
 #include "brain_box_msgs/msg/gimbal_status.hpp"
 #include "brain_box_msgs/msg/gps_details.hpp"
 #include "brain_box_msgs/msg/home_position.hpp"
-// #include "brain_box_msgs/msg/position_fused.hpp"
+#include "brain_box_msgs/msg/position_fused.hpp"
 #include "brain_box_msgs/msg/rc_connection_status.hpp"
 #include "brain_box_msgs/msg/relative_obstacle_info.hpp"
 #include "brain_box_msgs/msg/rtk_yaw.hpp"
@@ -327,7 +328,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   };
   struct CopterState
   {
-    brain_box_msgs::msg::PositionFused local_position;
+    psdk_interfaces::msg::PositionFused local_position;
     sensor_msgs::msg::NavSatFix gps_position;
     tf2::Quaternion attitude;
     geometry_msgs::msg::Vector3Stamped gimbal_angles;
@@ -1047,7 +1048,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
       rtk_position_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::TwistStamped>::SharedPtr rtk_velocity_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::RTKYaw>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::QuaternionStamped>::SharedPtr
       rtk_yaw_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt8>::SharedPtr
       rtk_position_info_pub_;

@@ -71,7 +71,7 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
   rtk_velocity_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>(
       "psdk_ros2/rtk_velocity", 10);
   rtk_yaw_pub_ =
-      create_publisher<brain_box_msgs::msg::RTKYaw>("psdk_ros2/rtk_yaw", 10);
+      create_publisher<geometry_msgs::msg::QuaternionStamped>("psdk_ros2/rtk_yaw", 10);
   rtk_position_info_pub_ =
       create_publisher<std_msgs::msg::UInt8>("psdk_ros2/rtk_position_info", 10);
   rtk_yaw_info_pub_ =
@@ -1207,9 +1207,9 @@ TelemetryModule::rtk_yaw_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionRtkYaw> rtk_yaw =
       std::make_unique<T_DjiFcSubscriptionRtkYaw>(
           *reinterpret_cast<const T_DjiFcSubscriptionRtkYaw *>(data));
-  brain_box_msgs::msg::RTKYaw rtk_yaw_msg;
+  geometry_msgs::msg::QuaternionStamped rtk_yaw_msg;
   rtk_yaw_msg.header.stamp = this->get_clock()->now();
-  rtk_yaw_msg.yaw = *rtk_yaw;
+  rtk_yaw_msg.quaternion.w = *rtk_yaw;
   rtk_yaw_pub_->publish(rtk_yaw_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
