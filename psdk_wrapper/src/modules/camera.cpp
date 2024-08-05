@@ -1472,10 +1472,10 @@ CameraModule::camera_get_file_list_info_cb(
   }
   else
   {
-    std::vector<psdk_interfaces::msg::FileInfo> file_list;
+    std::vector<brain_box_msgs::msg::FileInfo> file_list;
     for (int i = 0; i < retrieved_file_list.totalCount; i++)
     {
-      psdk_interfaces::msg::FileInfo file_info;
+      brain_box_msgs::msg::FileInfo file_info;
       file_info = set_file_info(retrieved_file_list.fileListInfo[i]);
       file_list.push_back(file_info);
     }
@@ -1557,10 +1557,10 @@ CameraModule::execute_delete_file_by_index()
   }
 }
 
-psdk_interfaces::msg::FileInfo
+brain_box_msgs::msg::FileInfo
 CameraModule::set_file_info(const T_DjiCameraManagerFileListInfo file_info)
 {
-  psdk_interfaces::msg::FileInfo file;
+  brain_box_msgs::msg::FileInfo file;
   file.name = std::string(file_info.fileName);
   file.type = file_info.type;
   file.size = file_info.fileSize;
@@ -1575,7 +1575,7 @@ CameraModule::set_file_info(const T_DjiCameraManagerFileListInfo file_info)
   {
     for (int i = 0; i < file.number_sub_files; i++)
     {
-      psdk_interfaces::msg::SubFileInfo sub_file;
+      brain_box_msgs::msg::SubFileInfo sub_file;
       sub_file.name = std::string(file_info.subFileListInfo[i].fileName);
       sub_file.size = file_info.subFileListInfo[i].fileSize;
       sub_file.index = file_info.subFileListInfo[i].fileIndex;
@@ -1604,11 +1604,11 @@ CameraModule::get_unix_time(const T_DjiCameraManagerFileCreateTime &time)
   return std::mktime(&timeinfo);
 }
 
-psdk_interfaces::msg::FileAttributes
+brain_box_msgs::msg::FileAttributes
 CameraModule::set_file_attributes(
     const T_DjiCameraManagerFileAttributeData &attributes)
 {
-  psdk_interfaces::msg::FileAttributes att_msg;
+  brain_box_msgs::msg::FileAttributes att_msg;
   att_msg.photo_ratio = attributes.photoAttribute.attributePhotoRatio;
   att_msg.photo_rotation = attributes.photoAttribute.attributePhotoRotation;
   att_msg.video_duration = attributes.videoAttribute.attributeVideoDuration;

@@ -43,6 +43,7 @@
 #include <std_msgs/msg/u_int8.hpp>
 #include <std_srvs/srv/trigger.hpp>
 #include <string>
+#include "nav_msgs/msg/odometry.hpp"
 
 #include "psdk_interfaces/msg/control_mode.hpp"
 #include "psdk_interfaces/msg/display_mode.hpp"
@@ -59,6 +60,20 @@
 #include "psdk_interfaces/msg/single_battery_info.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 
+//brain_box_msgs
+#include "brain_box_msgs/msg/control_mode.hpp"
+#include "brain_box_msgs/msg/display_mode.hpp"
+#include "brain_box_msgs/msg/esc_data.hpp"
+#include "brain_box_msgs/msg/flight_anomaly.hpp"
+#include "brain_box_msgs/msg/flight_status.hpp"
+#include "brain_box_msgs/msg/gimbal_status.hpp"
+#include "brain_box_msgs/msg/gps_details.hpp"
+#include "brain_box_msgs/msg/home_position.hpp"
+// #include "brain_box_msgs/msg/position_fused.hpp"
+#include "brain_box_msgs/msg/rc_connection_status.hpp"
+#include "brain_box_msgs/msg/relative_obstacle_info.hpp"
+#include "brain_box_msgs/msg/rtk_yaw.hpp"
+#include "brain_box_msgs/msg/single_battery_info.hpp"
 namespace psdk_ros2
 {
 class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
@@ -312,7 +327,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   };
   struct CopterState
   {
-    psdk_interfaces::msg::PositionFused local_position;
+    brain_box_msgs::msg::PositionFused local_position;
     sensor_msgs::msg::NavSatFix gps_position;
     tf2::Quaternion attitude;
     geometry_msgs::msg::Vector3Stamped gimbal_angles;
@@ -1014,6 +1029,8 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
       imu_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       psdk_interfaces::msg::PositionFused>::SharedPtr position_fused_pub_;
+  rclcpp_lifecycle::LifecyclePublisher<
+      nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::NavSatFix>::SharedPtr
       gps_fused_pub_;
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::NavSatFix>::SharedPtr
@@ -1021,7 +1038,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::TwistStamped>::SharedPtr gps_velocity_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::GPSDetails>::SharedPtr gps_details_pub_;
+      brain_box_msgs::msg::GPSDetails>::SharedPtr gps_details_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt8>::SharedPtr
       gps_signal_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt8>::SharedPtr
@@ -1030,7 +1047,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
       rtk_position_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::TwistStamped>::SharedPtr rtk_velocity_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<psdk_interfaces::msg::RTKYaw>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::RTKYaw>::SharedPtr
       rtk_yaw_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt8>::SharedPtr
       rtk_position_info_pub_;
@@ -1043,32 +1060,32 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Joy>::SharedPtr
       rc_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::RCConnectionStatus>::SharedPtr
+      brain_box_msgs::msg::RCConnectionStatus>::SharedPtr
       rc_connection_status_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<psdk_interfaces::msg::EscData>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::EscData>::SharedPtr
       esc_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::FlightStatus>::SharedPtr flight_status_pub_;
+      brain_box_msgs::msg::FlightStatus>::SharedPtr flight_status_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt8>::SharedPtr
       landing_gear_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::UInt16>::SharedPtr
       motor_start_error_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::DisplayMode>::SharedPtr display_mode_pub_;
+      brain_box_msgs::msg::DisplayMode>::SharedPtr display_mode_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::FlightAnomaly>::SharedPtr flight_anomaly_pub_;
+      brain_box_msgs::msg::FlightAnomaly>::SharedPtr flight_anomaly_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       sensor_msgs::msg::BatteryState>::SharedPtr battery_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::SingleBatteryInfo>::SharedPtr
+      brain_box_msgs::msg::SingleBatteryInfo>::SharedPtr
       single_battery_index1_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::SingleBatteryInfo>::SharedPtr
+      brain_box_msgs::msg::SingleBatteryInfo>::SharedPtr
       single_battery_index2_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
       height_fused_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::ControlMode>::SharedPtr control_mode_pub_;
+      brain_box_msgs::msg::ControlMode>::SharedPtr control_mode_pub_;
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::NavSatFix>::SharedPtr
       home_point_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>::SharedPtr
@@ -1084,7 +1101,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::AccelStamped>::SharedPtr acceleration_body_raw_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::RelativeObstacleInfo>::SharedPtr
+      brain_box_msgs::msg::RelativeObstacleInfo>::SharedPtr
       relative_obstacle_info_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
       altitude_sl_pub_;
@@ -1095,7 +1112,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::Vector3Stamped>::SharedPtr gimbal_angles_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::GimbalStatus>::SharedPtr gimbal_status_pub_;
+      brain_box_msgs::msg::GimbalStatus>::SharedPtr gimbal_status_pub_;
 
   /* ROS 2 services */
   rclcpp::Service<Trigger>::SharedPtr set_local_position_ref_srv_;

@@ -30,6 +30,7 @@ find_package(nav_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(psdk_interfaces REQUIRED)
+find_package(brain_box_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
@@ -145,6 +146,7 @@ set(dependencies
   std_msgs
   nav_msgs
   psdk_interfaces
+  brain_box_msgs
   std_srvs
 )
 

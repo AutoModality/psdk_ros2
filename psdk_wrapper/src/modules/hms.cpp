@@ -38,7 +38,7 @@ HmsModule::on_configure(const rclcpp_lifecycle::State &state)
 {
   (void)state;
   RCLCPP_INFO(get_logger(), "Configuring HmsModule");
-  hms_info_table_pub_ = create_publisher<psdk_interfaces::msg::HmsInfoTable>(
+  hms_info_table_pub_ = create_publisher<brain_box_msgs::msg::HmsInfoTable>(
       "psdk_ros2/hms_info_table", 10);
 
   return CallbackReturn::SUCCESS;
@@ -91,11 +91,11 @@ c_hms_callback(T_DjiHmsInfoTable hms_info_table)
   return global_hms_ptr_->hms_callback(hms_info_table);
 }
 
-psdk_interfaces::msg::HmsInfoTable
+brain_box_msgs::msg::HmsInfoTable
 HmsModule::to_ros2_msg(const T_DjiHmsInfoTable &hms_info_table,
                        const nlohmann::json &codes, const char *language)
 {
-  psdk_interfaces::msg::HmsInfoTable ros2_hms;
+  brain_box_msgs::msg::HmsInfoTable ros2_hms;
   ros2_hms.num_msg = hms_info_table.hmsInfoNum;
   ros2_hms.table.resize(hms_info_table.hmsInfoNum);
 
@@ -230,7 +230,7 @@ HmsModule::hms_callback(T_DjiHmsInfoTable hms_info_table)
   // Only process the data when the ROS2 publisher is active
   if (hms_info_table_pub_->is_activated())
   {
-    psdk_interfaces::msg::HmsInfoTable ros2_hms =
+    brain_box_msgs::msg::HmsInfoTable ros2_hms =
         to_ros2_msg(hms_info_table, hms_return_codes_json_);
     hms_info_table_pub_->publish(ros2_hms);
   }

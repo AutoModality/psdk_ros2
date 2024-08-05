@@ -32,13 +32,13 @@
 
 #include "psdk_interfaces/action/camera_delete_file_by_index.hpp"
 #include "psdk_interfaces/action/camera_download_file_by_index.hpp"
-#include "psdk_interfaces/msg/file_attributes.hpp"
-#include "psdk_interfaces/msg/file_info.hpp"
-#include "psdk_interfaces/msg/sub_file_info.hpp"
+#include "brain_box_msgs/msg/file_attributes.hpp"
+#include "brain_box_msgs/msg/file_info.hpp"
+#include "brain_box_msgs/msg/sub_file_info.hpp"
 #include "psdk_interfaces/srv/camera_format_sd_card.hpp"
 #include "psdk_interfaces/srv/camera_get_aperture.hpp"
 #include "psdk_interfaces/srv/camera_get_exposure_mode_ev.hpp"
-#include "psdk_interfaces/srv/camera_get_file_list_info.hpp"
+#include "brain_box_msgs/srv/camera_get_file_list_info.hpp"
 #include "psdk_interfaces/srv/camera_get_focus_mode.hpp"
 #include "psdk_interfaces/srv/camera_get_focus_target.hpp"
 #include "psdk_interfaces/srv/camera_get_iso.hpp"
@@ -77,7 +77,7 @@ class CameraModule : public rclcpp_lifecycle::LifecycleNode
   using CameraRecordVideo = psdk_interfaces::srv::CameraRecordVideo;
   using CameraGetLaserRangingInfo =
       psdk_interfaces::srv::CameraGetLaserRangingInfo;
-  using CameraGetFileListInfo = psdk_interfaces::srv::CameraGetFileListInfo;
+  using CameraGetFileListInfo = brain_box_msgs::srv::CameraGetFileListInfo;
   using CameraDownloadFileByIndex =
       psdk_interfaces::action::CameraDownloadFileByIndex;
   using CameraDeleteFileByIndex =
@@ -464,7 +464,7 @@ class CameraModule : public rclcpp_lifecycle::LifecycleNode
    * @param file_info received from the SD card
    * @return psdk_interfaces::msg::FileInfo msg object
    */
-  psdk_interfaces::msg::FileInfo set_file_info(
+  brain_box_msgs::msg::FileInfo set_file_info(
       const T_DjiCameraManagerFileListInfo file_info);
   /**
    * @brief Get the unix time object
@@ -477,7 +477,7 @@ class CameraModule : public rclcpp_lifecycle::LifecycleNode
    * @param attributes received file attributes
    * @return psdk_interfaces::msg::FileAttributes file attributes msg
    */
-  psdk_interfaces::msg::FileAttributes set_file_attributes(
+  brain_box_msgs::msg::FileAttributes set_file_attributes(
       const T_DjiCameraManagerFileAttributeData& attributes);
   /**
    * @brief Write data to a file

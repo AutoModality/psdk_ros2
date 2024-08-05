@@ -24,7 +24,7 @@
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <string>
 
-#include "psdk_interfaces/msg/gimbal_rotation.hpp"
+#include "brain_box_msgs/msg/gimbal_rotation.hpp"
 #include "psdk_interfaces/srv/gimbal_reset.hpp"
 #include "psdk_interfaces/srv/gimbal_set_mode.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
@@ -103,7 +103,7 @@ class GimbalModule : public rclcpp_lifecycle::LifecycleNode
    * command.(see T_DjiGimbalManagerRotation for more information).
    */
   void gimbal_rotation_cb(
-      const psdk_interfaces::msg::GimbalRotation::SharedPtr msg);
+      const brain_box_msgs::msg::GimbalRotation::SharedPtr msg);
 
   /**
    * @brief Set gimbal mode
@@ -127,7 +127,7 @@ class GimbalModule : public rclcpp_lifecycle::LifecycleNode
   void gimbal_reset_cb(const std::shared_ptr<GimbalReset::Request> request,
                        const std::shared_ptr<GimbalReset::Response> response);
 
-  rclcpp::Subscription<psdk_interfaces::msg::GimbalRotation>::SharedPtr
+  rclcpp::Subscription<brain_box_msgs::msg::GimbalRotation>::SharedPtr
       gimbal_rotation_sub_;
   rclcpp::Service<GimbalSetMode>::SharedPtr gimbal_set_mode_service_;
   rclcpp::Service<GimbalReset>::SharedPtr gimbal_reset_service_;

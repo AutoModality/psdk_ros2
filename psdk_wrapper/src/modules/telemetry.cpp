@@ -52,13 +52,15 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
           "psdk_ros2/velocity_ground_fused", 10);
   position_fused_pub_ = create_publisher<psdk_interfaces::msg::PositionFused>(
       "psdk_ros2/position_fused", 10);
+  odom_pub_ = create_publisher<nav_msgs::msg::Odometry>(
+      "psdk_ros2/odom", 10);
   gps_fused_pub_ = create_publisher<sensor_msgs::msg::NavSatFix>(
       "psdk_ros2/gps_position_fused", 10);
   gps_position_pub_ = create_publisher<sensor_msgs::msg::NavSatFix>(
       "psdk_ros2/gps_position", 10);
   gps_velocity_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>(
       "psdk_ros2/gps_velocity", 10);
-  gps_details_pub_ = create_publisher<psdk_interfaces::msg::GPSDetails>(
+  gps_details_pub_ = create_publisher<brain_box_msgs::msg::GPSDetails>(
       "psdk_ros2/gps_details", 10);
   gps_signal_pub_ =
       create_publisher<std_msgs::msg::UInt8>("psdk_ros2/gps_signal_level", 10);
@@ -69,7 +71,7 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
   rtk_velocity_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>(
       "psdk_ros2/rtk_velocity", 10);
   rtk_yaw_pub_ =
-      create_publisher<psdk_interfaces::msg::RTKYaw>("psdk_ros2/rtk_yaw", 10);
+      create_publisher<brain_box_msgs::msg::RTKYaw>("psdk_ros2/rtk_yaw", 10);
   rtk_position_info_pub_ =
       create_publisher<std_msgs::msg::UInt8>("psdk_ros2/rtk_position_info", 10);
   rtk_yaw_info_pub_ =
@@ -80,31 +82,31 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
       "psdk_ros2/magnetic_field", 10);
   rc_pub_ = create_publisher<sensor_msgs::msg::Joy>("psdk_ros2/rc", 10);
   rc_connection_status_pub_ =
-      create_publisher<psdk_interfaces::msg::RCConnectionStatus>(
+      create_publisher<brain_box_msgs::msg::RCConnectionStatus>(
           "psdk_ros2/rc_connection_status", 10);
   esc_pub_ =
-      create_publisher<psdk_interfaces::msg::EscData>("psdk_ros2/esc_data", 1);
+      create_publisher<brain_box_msgs::msg::EscData>("psdk_ros2/esc_data", 1);
   gimbal_angles_pub_ = create_publisher<geometry_msgs::msg::Vector3Stamped>(
       "psdk_ros2/gimbal_angles", 10);
-  gimbal_status_pub_ = create_publisher<psdk_interfaces::msg::GimbalStatus>(
+  gimbal_status_pub_ = create_publisher<brain_box_msgs::msg::GimbalStatus>(
       "psdk_ros2/gimbal_status", 10);
-  flight_status_pub_ = create_publisher<psdk_interfaces::msg::FlightStatus>(
+  flight_status_pub_ = create_publisher<brain_box_msgs::msg::FlightStatus>(
       "psdk_ros2/flight_status", 10);
-  display_mode_pub_ = create_publisher<psdk_interfaces::msg::DisplayMode>(
+  display_mode_pub_ = create_publisher<brain_box_msgs::msg::DisplayMode>(
       "psdk_ros2/display_mode", 10);
   landing_gear_pub_ = create_publisher<std_msgs::msg::UInt8>(
       "psdk_ros2/landing_gear_status", 10);
   motor_start_error_pub_ = create_publisher<std_msgs::msg::UInt16>(
       "psdk_ros2/motor_start_error", 10);
-  flight_anomaly_pub_ = create_publisher<psdk_interfaces::msg::FlightAnomaly>(
+  flight_anomaly_pub_ = create_publisher<brain_box_msgs::msg::FlightAnomaly>(
       "psdk_ros2/flight_anomaly", 10);
   battery_pub_ =
       create_publisher<sensor_msgs::msg::BatteryState>("psdk_ros2/battery", 10);
   single_battery_index1_pub_ =
-      create_publisher<psdk_interfaces::msg::SingleBatteryInfo>(
+      create_publisher<brain_box_msgs::msg::SingleBatteryInfo>(
           "psdk_ros2/single_battery_index1", 10);
   single_battery_index2_pub_ =
-      create_publisher<psdk_interfaces::msg::SingleBatteryInfo>(
+      create_publisher<brain_box_msgs::msg::SingleBatteryInfo>(
           "psdk_ros2/single_battery_index2", 10);
   height_fused_pub_ = create_publisher<std_msgs::msg::Float32>(
       "psdk_ros2/height_above_ground", 10);
@@ -124,9 +126,9 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
       create_publisher<geometry_msgs::msg::AccelStamped>(
           "psdk_ros2/acceleration_body_raw", 10);
   relative_obstacle_info_pub_ =
-      create_publisher<psdk_interfaces::msg::RelativeObstacleInfo>(
+      create_publisher<brain_box_msgs::msg::RelativeObstacleInfo>(
           "psdk_ros2/relative_obstacle_info", 10);
-  control_mode_pub_ = create_publisher<psdk_interfaces::msg::ControlMode>(
+  control_mode_pub_ = create_publisher<brain_box_msgs::msg::ControlMode>(
       "psdk_ros2/control_mode", 10);
   home_point_pub_ =
       create_publisher<sensor_msgs::msg::NavSatFix>("psdk_ros2/home_point", 10);
@@ -174,6 +176,7 @@ TelemetryModule::on_activate(const rclcpp_lifecycle::State &state)
   imu_pub_->on_activate();
   velocity_ground_fused_pub_->on_activate();
   position_fused_pub_->on_activate();
+  odom_pub_->on_activate();
   gps_fused_pub_->on_activate();
   gps_position_pub_->on_activate();
   gps_velocity_pub_->on_activate();
@@ -226,6 +229,7 @@ TelemetryModule::on_deactivate(const rclcpp_lifecycle::State &state)
   imu_pub_->on_deactivate();
   velocity_ground_fused_pub_->on_deactivate();
   position_fused_pub_->on_deactivate();
+  odom_pub_->on_deactivate();
   gps_fused_pub_->on_deactivate();
   gps_position_pub_->on_deactivate();
   gps_velocity_pub_->on_deactivate();
@@ -285,6 +289,7 @@ TelemetryModule::on_cleanup(const rclcpp_lifecycle::State &state)
   imu_pub_.reset();
   velocity_ground_fused_pub_.reset();
   position_fused_pub_.reset();
+  odom_pub_.reset();
   gps_fused_pub_.reset();
   gps_position_pub_.reset();
   gps_velocity_pub_.reset();
@@ -984,6 +989,7 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
   tf2::Vector3 position_NED{position_vo->x, position_vo->y, position_vo->z};
   tf2::Vector3 position_ENU = psdk_utils::R_NED2ENU * position_NED;
   psdk_interfaces::msg::PositionFused position_msg;
+  nav_msgs::msg::Odometry odometry_msg;
   position_msg.header.stamp = this->get_clock()->now();
   position_msg.header.frame_id = params_.map_frame;
   position_msg.position.x = position_ENU.getX();
@@ -992,6 +998,13 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
   position_msg.x_health = position_vo->xHealth;
   position_msg.y_health = position_vo->yHealth;
   position_msg.z_health = position_vo->zHealth;
+
+  //odometery data as a stand odom msg
+  odometry_msg.header.stamp = this->get_clock()->now();
+  odometry_msg.header.frame_id = params_.map_frame;
+  odometry_msg.pose.pose.position.x = position_ENU.getX();
+  odometry_msg.pose.pose.position.y = position_ENU.getY();
+  odometry_msg.pose.pose.position.z = position_ENU.getZ();
 
   if (get_gps_signal_level() == GOOD_GPS_SIGNAL_LEVEL &&
       !is_local_altitude_reference_set())
@@ -1015,8 +1028,13 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
         position_msg.position.y - local_position_reference_.vector.y;
     position_msg.position.z =
         position_msg.position.z - local_position_reference_.vector.z;
+
+    odometry_msg.pose.pose.position.x = position_msg.position.x - local_position_reference_.vector.x;
+    odometry_msg.pose.pose.position.y = position_msg.position.y - local_position_reference_.vector.y;
+    odometry_msg.pose.pose.position.z = position_msg.position.z - local_position_reference_.vector.z;
   }
   position_fused_pub_->publish(position_msg);
+  odom_pub_->publish(odometry_msg);
 
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
@@ -1091,7 +1109,7 @@ TelemetryModule::gps_details_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionGpsDetails> gps_details =
       std::make_unique<T_DjiFcSubscriptionGpsDetails>(
           *reinterpret_cast<const T_DjiFcSubscriptionGpsDetails *>(data));
-  psdk_interfaces::msg::GPSDetails gps_details_msg;
+  brain_box_msgs::msg::GPSDetails gps_details_msg;
   gps_details_msg.header.stamp = this->get_clock()->now();
   // Convert cm/s given by dji topic to m/s
   gps_details_msg.horizontal_dop = gps_details->hdop;
@@ -1189,7 +1207,7 @@ TelemetryModule::rtk_yaw_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionRtkYaw> rtk_yaw =
       std::make_unique<T_DjiFcSubscriptionRtkYaw>(
           *reinterpret_cast<const T_DjiFcSubscriptionRtkYaw *>(data));
-  psdk_interfaces::msg::RTKYaw rtk_yaw_msg;
+  brain_box_msgs::msg::RTKYaw rtk_yaw_msg;
   rtk_yaw_msg.header.stamp = this->get_clock()->now();
   rtk_yaw_msg.yaw = *rtk_yaw;
   rtk_yaw_pub_->publish(rtk_yaw_msg);
@@ -1295,12 +1313,12 @@ TelemetryModule::esc_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionEscData> esc_data =
       std::make_unique<T_DjiFcSubscriptionEscData>(
           *reinterpret_cast<const T_DjiFcSubscriptionEscData *>(data));
-  psdk_interfaces::msg::EscData esc_msg;
+  brain_box_msgs::msg::EscData esc_msg;
   esc_msg.header.stamp = this->get_clock()->now();
   // Populate the message with ESC data
   for (int i = 0; i < 8; ++i)
   {
-    psdk_interfaces::msg::EscStatusIndividual esc_individual_msg;
+    brain_box_msgs::msg::EscStatusIndividual esc_individual_msg;
     esc_individual_msg.current = esc_data->esc[i].current;
     esc_individual_msg.speed = esc_data->esc[i].speed;
     esc_individual_msg.voltage = esc_data->esc[i].voltage;
@@ -1326,7 +1344,7 @@ TelemetryModule::rc_connection_status_callback(
   std::unique_ptr<T_DjiFcSubscriptionRCWithFlagData> rc_connection_data =
       std::make_unique<T_DjiFcSubscriptionRCWithFlagData>(
           *reinterpret_cast<const T_DjiFcSubscriptionRCWithFlagData *>(data));
-  psdk_interfaces::msg::RCConnectionStatus connection_status_msg;
+  brain_box_msgs::msg::RCConnectionStatus connection_status_msg;
   connection_status_msg.header.stamp = this->get_clock()->now();
   connection_status_msg.air_connection = rc_connection_data->flag.skyConnected;
   connection_status_msg.ground_connection =
@@ -1394,7 +1412,7 @@ TelemetryModule::gimbal_status_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionGimbalStatus> gimbal_status =
       std::make_unique<T_DjiFcSubscriptionGimbalStatus>(
           *reinterpret_cast<const T_DjiFcSubscriptionGimbalStatus *>(data));
-  psdk_interfaces::msg::GimbalStatus gimbal_status_msg;
+  brain_box_msgs::msg::GimbalStatus gimbal_status_msg;
   gimbal_status_msg.header.stamp = this->get_clock()->now();
   gimbal_status_msg.mount_status = gimbal_status->mountStatus;
   gimbal_status_msg.is_busy = gimbal_status->isBusy;
@@ -1428,7 +1446,7 @@ TelemetryModule::flight_status_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionFlightStatus> flight_status =
       std::make_unique<T_DjiFcSubscriptionFlightStatus>(
           *reinterpret_cast<const T_DjiFcSubscriptionFlightStatus *>(data));
-  psdk_interfaces::msg::FlightStatus flight_status_msg;
+  brain_box_msgs::msg::FlightStatus flight_status_msg;
   flight_status_msg.header.stamp = this->get_clock()->now();
   flight_status_msg.flight_status = *flight_status;
   flight_status_pub_->publish(flight_status_msg);
@@ -1444,7 +1462,7 @@ TelemetryModule::display_mode_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionDisplaymode> display_mode =
       std::make_unique<T_DjiFcSubscriptionDisplaymode>(
           *reinterpret_cast<const T_DjiFcSubscriptionDisplaymode *>(data));
-  psdk_interfaces::msg::DisplayMode display_mode_msg;
+  brain_box_msgs::msg::DisplayMode display_mode_msg;
   display_mode_msg.header.stamp = this->get_clock()->now();
   display_mode_msg.display_mode = *display_mode;
   display_mode_pub_->publish(display_mode_msg);
@@ -1493,7 +1511,7 @@ TelemetryModule::flight_anomaly_callback(const uint8_t *data,
   std::unique_ptr<T_DjiFcSubscriptionFlightAnomaly> flight_anomaly =
       std::make_unique<T_DjiFcSubscriptionFlightAnomaly>(
           *reinterpret_cast<const T_DjiFcSubscriptionFlightAnomaly *>(data));
-  psdk_interfaces::msg::FlightAnomaly flight_anomaly_msg;
+  brain_box_msgs::msg::FlightAnomaly flight_anomaly_msg;
   flight_anomaly_msg.header.stamp = this->get_clock()->now();
   flight_anomaly_msg.impact_in_air = flight_anomaly->impactInAir;
   flight_anomaly_msg.random_fly = flight_anomaly->randomFly;
@@ -1564,7 +1582,7 @@ TelemetryModule::control_mode_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionControlDevice> control_mode =
       std::make_unique<T_DjiFcSubscriptionControlDevice>(
           *reinterpret_cast<const T_DjiFcSubscriptionControlDevice *>(data));
-  psdk_interfaces::msg::ControlMode control_mode_msg;
+  brain_box_msgs::msg::ControlMode control_mode_msg;
   control_mode_msg.header.stamp = this->get_clock()->now();
   control_mode_msg.control_mode = control_mode->controlMode;
   control_mode_msg.device_mode = control_mode->deviceStatus;
@@ -1712,7 +1730,7 @@ TelemetryModule::avoid_data_callback(const uint8_t *data, uint16_t data_size,
       std::make_unique<T_DjiFcSubscriptionAvoidData>(
           *reinterpret_cast<const T_DjiFcSubscriptionAvoidData *>(data));
 
-  psdk_interfaces::msg::RelativeObstacleInfo relative_obstacle_msg;
+  brain_box_msgs::msg::RelativeObstacleInfo relative_obstacle_msg;
   relative_obstacle_msg.down = relative_obstacle_data->down;
   relative_obstacle_msg.front = relative_obstacle_data->front;
   relative_obstacle_msg.right = relative_obstacle_data->right;
@@ -1775,7 +1793,7 @@ TelemetryModule::single_battery_index1_callback(
           *reinterpret_cast<const T_DjiFcSubscriptionSingleBatteryInfo *>(
               data));
 
-  psdk_interfaces::msg::SingleBatteryInfo single_battery_info_msg;
+  brain_box_msgs::msg::SingleBatteryInfo single_battery_info_msg;
   single_battery_info_msg.header.stamp = this->get_clock()->now();
 
   single_battery_info_msg.battery_index = single_battery_info->batteryIndex;
@@ -1826,7 +1844,7 @@ TelemetryModule::single_battery_index2_callback(
           *reinterpret_cast<const T_DjiFcSubscriptionSingleBatteryInfo *>(
               data));
 
-  psdk_interfaces::msg::SingleBatteryInfo single_battery_info_msg;
+  brain_box_msgs::msg::SingleBatteryInfo single_battery_info_msg;
   single_battery_info_msg.header.stamp = this->get_clock()->now();
 
   single_battery_info_msg.battery_index = single_battery_info->batteryIndex;

@@ -41,7 +41,7 @@ GimbalModule::on_configure(const rclcpp_lifecycle::State &state)
   (void)state;
   RCLCPP_INFO(get_logger(), "Configuring GimbalModule");
   gimbal_rotation_sub_ =
-      create_subscription<psdk_interfaces::msg::GimbalRotation>(
+      create_subscription<brain_box_msgs::msg::GimbalRotation>(
           "psdk_ros2/gimbal_rotation", 10,
           std::bind(&GimbalModule::gimbal_rotation_cb, this,
                     std::placeholders::_1));
@@ -185,7 +185,7 @@ GimbalModule::gimbal_reset_cb(
 
 void
 GimbalModule::gimbal_rotation_cb(
-    const psdk_interfaces::msg::GimbalRotation::SharedPtr msg)
+    const brain_box_msgs::msg::GimbalRotation::SharedPtr msg)
 {
   (void)msg;
   T_DjiReturnCode return_code;

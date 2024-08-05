@@ -48,7 +48,7 @@ PerceptionModule::on_configure(const rclcpp_lifecycle::State &state)
       create_publisher<sensor_msgs::msg::Image>(
           "psdk_ros2/perception_stereo_right_stream", rclcpp::SensorDataQoS());
   perception_camera_parameters_pub_ =
-      create_publisher<psdk_interfaces::msg::PerceptionCameraParameters>(
+      create_publisher<brain_box_msgs::msg::PerceptionCameraParameters>(
           "psdk_ros2/perception_camera_parameters", 10);
   perception_stereo_vision_service_ =
       create_service<PerceptionStereoVisionSetup>(
@@ -389,7 +389,7 @@ PerceptionModule::perception_image_callback(T_DjiPerceptionImageInfo imageInfo,
 void
 PerceptionModule::perception_camera_parameters_publisher()
 {
-  psdk_interfaces::msg::PerceptionCameraParameters
+  brain_box_msgs::msg::PerceptionCameraParameters
       perception_camera_parameters_msg;
   T_DjiReturnCode return_code;
   T_DjiPerceptionCameraParametersPacket cameraParametersPacket = {0};

@@ -33,6 +33,8 @@
 
 #include "psdk_interfaces/msg/perception_camera_parameters.hpp"
 #include "psdk_interfaces/srv/perception_stereo_vision_setup.hpp"
+//brain_msgs
+#include "brain_box_msgs/msg/perception_camera_parameters.hpp"
 
 namespace psdk_ros2
 {
@@ -164,7 +166,7 @@ class PerceptionModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Image>::SharedPtr
       perception_stereo_vision_right_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::PerceptionCameraParameters>::SharedPtr
+      brain_box_msgs::msg::PerceptionCameraParameters>::SharedPtr
       perception_camera_parameters_pub_;
 
   // Timer for publishing camera parameters at 20 hz

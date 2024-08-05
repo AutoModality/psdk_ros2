@@ -25,6 +25,7 @@
   <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>psdk_interfaces</depend>
+  <depend>brain_box_msgs</depend>
   <depend>std_srvs</depend>
   <depend>nlohmann-json-dev</depend>
 

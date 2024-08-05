@@ -29,8 +29,8 @@
 #include <shared_mutex>
 #include <string>
 
-#include "psdk_interfaces/msg/hms_info_msg.hpp"
-#include "psdk_interfaces/msg/hms_info_table.hpp"
+#include "brain_box_msgs/msg/hms_info_msg.hpp"
+#include "brain_box_msgs/msg/hms_info_table.hpp"
 #include "psdk_wrapper/utils/json_utils.hpp"
 
 namespace psdk_ros2
@@ -123,12 +123,12 @@ class HmsModule : public rclcpp_lifecycle::LifecycleNode
    * @param language Language to fetch the return codes in.
    * @return psdk_interfaces::msg::HmsInfoTable
    */
-  psdk_interfaces::msg::HmsInfoTable to_ros2_msg(
+  brain_box_msgs::msg::HmsInfoTable to_ros2_msg(
       const T_DjiHmsInfoTable& hms_info_table, const nlohmann::json& codes,
       const char* language = "en");
 
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::HmsInfoTable>::SharedPtr hms_info_table_pub_;
+      brain_box_msgs::msg::HmsInfoTable>::SharedPtr hms_info_table_pub_;
   std::shared_mutex publisher_mutex_;
   mutable std::shared_mutex global_ptr_mutex_;
   bool is_module_initialized_{false};
