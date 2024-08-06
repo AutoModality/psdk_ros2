@@ -30,36 +30,36 @@
 #include <shared_mutex>
 #include <string>
 
-#include "psdk_interfaces/action/camera_delete_file_by_index.hpp"
-#include "psdk_interfaces/action/camera_download_file_by_index.hpp"
+#include "brain_box_msgs/action/camera_delete_file_by_index.hpp"
+#include "brain_box_msgs/action/camera_download_file_by_index.hpp"
 #include "brain_box_msgs/msg/file_attributes.hpp"
 #include "brain_box_msgs/msg/file_info.hpp"
 #include "brain_box_msgs/msg/sub_file_info.hpp"
-#include "psdk_interfaces/srv/camera_format_sd_card.hpp"
-#include "psdk_interfaces/srv/camera_get_aperture.hpp"
-#include "psdk_interfaces/srv/camera_get_exposure_mode_ev.hpp"
+#include "brain_box_msgs/srv/camera_format_sd_card.hpp"
+#include "brain_box_msgs/srv/camera_get_aperture.hpp"
+#include "brain_box_msgs/srv/camera_get_exposure_mode_ev.hpp"
 #include "brain_box_msgs/srv/camera_get_file_list_info.hpp"
-#include "psdk_interfaces/srv/camera_get_focus_mode.hpp"
-#include "psdk_interfaces/srv/camera_get_focus_target.hpp"
-#include "psdk_interfaces/srv/camera_get_iso.hpp"
-#include "psdk_interfaces/srv/camera_get_laser_ranging_info.hpp"
-#include "psdk_interfaces/srv/camera_get_optical_zoom.hpp"
-#include "psdk_interfaces/srv/camera_get_sd_storage_info.hpp"
-#include "psdk_interfaces/srv/camera_get_shutter_speed.hpp"
-#include "psdk_interfaces/srv/camera_get_type.hpp"
-#include "psdk_interfaces/srv/camera_record_video.hpp"
-#include "psdk_interfaces/srv/camera_set_aperture.hpp"
-#include "psdk_interfaces/srv/camera_set_exposure_mode_ev.hpp"
-#include "psdk_interfaces/srv/camera_set_focus_mode.hpp"
-#include "psdk_interfaces/srv/camera_set_focus_target.hpp"
-#include "psdk_interfaces/srv/camera_set_infrared_zoom.hpp"
-#include "psdk_interfaces/srv/camera_set_iso.hpp"
-#include "psdk_interfaces/srv/camera_set_optical_zoom.hpp"
-#include "psdk_interfaces/srv/camera_set_shutter_speed.hpp"
-#include "psdk_interfaces/srv/camera_shoot_burst_photo.hpp"
-#include "psdk_interfaces/srv/camera_shoot_interval_photo.hpp"
-#include "psdk_interfaces/srv/camera_shoot_single_photo.hpp"
-#include "psdk_interfaces/srv/camera_stop_shoot_photo.hpp"
+#include "brain_box_msgs/srv/camera_get_focus_mode.hpp"
+#include "brain_box_msgs/srv/camera_get_focus_target.hpp"
+#include "brain_box_msgs/srv/camera_get_iso.hpp"
+#include "brain_box_msgs/srv/camera_get_laser_ranging_info.hpp"
+#include "brain_box_msgs/srv/camera_get_optical_zoom.hpp"
+#include "brain_box_msgs/srv/camera_get_sd_storage_info.hpp"
+#include "brain_box_msgs/srv/camera_get_shutter_speed.hpp"
+#include "brain_box_msgs/srv/camera_get_type.hpp"
+#include "brain_box_msgs/srv/camera_record_video.hpp"
+#include "brain_box_msgs/srv/camera_set_aperture.hpp"
+#include "brain_box_msgs/srv/camera_set_exposure_mode_ev.hpp"
+#include "brain_box_msgs/srv/camera_set_focus_mode.hpp"
+#include "brain_box_msgs/srv/camera_set_focus_target.hpp"
+#include "brain_box_msgs/srv/camera_set_infrared_zoom.hpp"
+#include "brain_box_msgs/srv/camera_set_iso.hpp"
+#include "brain_box_msgs/srv/camera_set_optical_zoom.hpp"
+#include "brain_box_msgs/srv/camera_set_shutter_speed.hpp"
+#include "brain_box_msgs/srv/camera_shoot_burst_photo.hpp"
+#include "brain_box_msgs/srv/camera_shoot_interval_photo.hpp"
+#include "brain_box_msgs/srv/camera_shoot_single_photo.hpp"
+#include "brain_box_msgs/srv/camera_stop_shoot_photo.hpp"
 #include "psdk_wrapper/utils/action_server.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 
@@ -69,37 +69,37 @@ namespace psdk_ros2
 class CameraModule : public rclcpp_lifecycle::LifecycleNode
 {
  public:
-  using CameraShootSinglePhoto = psdk_interfaces::srv::CameraShootSinglePhoto;
-  using CameraShootBurstPhoto = psdk_interfaces::srv::CameraShootBurstPhoto;
+  using CameraShootSinglePhoto = brain_box_msgs::srv::CameraShootSinglePhoto;
+  using CameraShootBurstPhoto = brain_box_msgs::srv::CameraShootBurstPhoto;
   using CameraShootIntervalPhoto =
-      psdk_interfaces::srv::CameraShootIntervalPhoto;
-  using CameraStopShootPhoto = psdk_interfaces::srv::CameraStopShootPhoto;
-  using CameraRecordVideo = psdk_interfaces::srv::CameraRecordVideo;
+      brain_box_msgs::srv::CameraShootIntervalPhoto;
+  using CameraStopShootPhoto = brain_box_msgs::srv::CameraStopShootPhoto;
+  using CameraRecordVideo = brain_box_msgs::srv::CameraRecordVideo;
   using CameraGetLaserRangingInfo =
-      psdk_interfaces::srv::CameraGetLaserRangingInfo;
+      brain_box_msgs::srv::CameraGetLaserRangingInfo;
   using CameraGetFileListInfo = brain_box_msgs::srv::CameraGetFileListInfo;
   using CameraDownloadFileByIndex =
-      psdk_interfaces::action::CameraDownloadFileByIndex;
+      brain_box_msgs::action::CameraDownloadFileByIndex;
   using CameraDeleteFileByIndex =
-      psdk_interfaces::action::CameraDeleteFileByIndex;
-  using CameraGetType = psdk_interfaces::srv::CameraGetType;
-  using CameraSetExposureModeEV = psdk_interfaces::srv::CameraSetExposureModeEV;
-  using CameraGetExposureModeEV = psdk_interfaces::srv::CameraGetExposureModeEV;
-  using CameraSetShutterSpeed = psdk_interfaces::srv::CameraSetShutterSpeed;
-  using CameraGetShutterSpeed = psdk_interfaces::srv::CameraGetShutterSpeed;
-  using CameraSetISO = psdk_interfaces::srv::CameraSetISO;
-  using CameraGetISO = psdk_interfaces::srv::CameraGetISO;
-  using CameraSetFocusTarget = psdk_interfaces::srv::CameraSetFocusTarget;
-  using CameraGetFocusTarget = psdk_interfaces::srv::CameraGetFocusTarget;
-  using CameraSetFocusMode = psdk_interfaces::srv::CameraSetFocusMode;
-  using CameraGetFocusMode = psdk_interfaces::srv::CameraGetFocusMode;
-  using CameraSetOpticalZoom = psdk_interfaces::srv::CameraSetOpticalZoom;
-  using CameraGetOpticalZoom = psdk_interfaces::srv::CameraGetOpticalZoom;
-  using CameraSetInfraredZoom = psdk_interfaces::srv::CameraSetInfraredZoom;
-  using CameraSetAperture = psdk_interfaces::srv::CameraSetAperture;
-  using CameraGetAperture = psdk_interfaces::srv::CameraGetAperture;
-  using CameraFormatSdCard = psdk_interfaces::srv::CameraFormatSdCard;
-  using CameraGetSDStorageInfo = psdk_interfaces::srv::CameraGetSDStorageInfo;
+      brain_box_msgs::action::CameraDeleteFileByIndex;
+  using CameraGetType = brain_box_msgs::srv::CameraGetType;
+  using CameraSetExposureModeEV = brain_box_msgs::srv::CameraSetExposureModeEV;
+  using CameraGetExposureModeEV = brain_box_msgs::srv::CameraGetExposureModeEV;
+  using CameraSetShutterSpeed = brain_box_msgs::srv::CameraSetShutterSpeed;
+  using CameraGetShutterSpeed = brain_box_msgs::srv::CameraGetShutterSpeed;
+  using CameraSetISO = brain_box_msgs::srv::CameraSetISO;
+  using CameraGetISO = brain_box_msgs::srv::CameraGetISO;
+  using CameraSetFocusTarget = brain_box_msgs::srv::CameraSetFocusTarget;
+  using CameraGetFocusTarget = brain_box_msgs::srv::CameraGetFocusTarget;
+  using CameraSetFocusMode = brain_box_msgs::srv::CameraSetFocusMode;
+  using CameraGetFocusMode = brain_box_msgs::srv::CameraGetFocusMode;
+  using CameraSetOpticalZoom = brain_box_msgs::srv::CameraSetOpticalZoom;
+  using CameraGetOpticalZoom = brain_box_msgs::srv::CameraGetOpticalZoom;
+  using CameraSetInfraredZoom = brain_box_msgs::srv::CameraSetInfraredZoom;
+  using CameraSetAperture = brain_box_msgs::srv::CameraSetAperture;
+  using CameraGetAperture = brain_box_msgs::srv::CameraGetAperture;
+  using CameraFormatSdCard = brain_box_msgs::srv::CameraFormatSdCard;
+  using CameraGetSDStorageInfo = brain_box_msgs::srv::CameraGetSDStorageInfo;
   /**
    * @brief Construct a new CameraModule object
    * @param node_name Name of the node

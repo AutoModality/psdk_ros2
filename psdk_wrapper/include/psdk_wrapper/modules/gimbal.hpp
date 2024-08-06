@@ -25,8 +25,8 @@
 #include <string>
 
 #include "brain_box_msgs/msg/gimbal_rotation.hpp"
-#include "psdk_interfaces/srv/gimbal_reset.hpp"
-#include "psdk_interfaces/srv/gimbal_set_mode.hpp"
+#include "brain_box_msgs/srv/gimbal_reset.hpp"
+#include "brain_box_msgs/srv/gimbal_set_mode.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 
 namespace psdk_ros2
@@ -35,8 +35,8 @@ namespace psdk_ros2
 class GimbalModule : public rclcpp_lifecycle::LifecycleNode
 {
  public:
-  using GimbalSetMode = psdk_interfaces::srv::GimbalSetMode;
-  using GimbalReset = psdk_interfaces::srv::GimbalReset;
+  using GimbalSetMode = brain_box_msgs::srv::GimbalSetMode;
+  using GimbalReset = brain_box_msgs::srv::GimbalReset;
 
   /**
    * @brief Construct a new GimbalModule object

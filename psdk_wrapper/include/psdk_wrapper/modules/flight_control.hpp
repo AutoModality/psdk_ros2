@@ -28,11 +28,11 @@
 #include <std_srvs/srv/trigger.hpp>
 #include <string>
 
-#include "psdk_interfaces/srv/get_go_home_altitude.hpp"
-#include "psdk_interfaces/srv/get_obstacle_avoidance.hpp"
-#include "psdk_interfaces/srv/set_go_home_altitude.hpp"
-#include "psdk_interfaces/srv/set_home_from_gps.hpp"
-#include "psdk_interfaces/srv/set_obstacle_avoidance.hpp"
+#include "brain_box_msgs/srv/get_go_home_altitude.hpp"
+#include "brain_box_msgs/srv/get_obstacle_avoidance.hpp"
+#include "brain_box_msgs/srv/set_go_home_altitude.hpp"
+#include "brain_box_msgs/srv/set_home_from_gps.hpp"
+#include "brain_box_msgs/srv/set_obstacle_avoidance.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 namespace psdk_ros2
 {
@@ -40,11 +40,11 @@ class FlightControlModule : public rclcpp_lifecycle::LifecycleNode
 {
  public:
   using Trigger = std_srvs::srv::Trigger;
-  using SetHomeFromGPS = psdk_interfaces::srv::SetHomeFromGPS;
-  using SetGoHomeAltitude = psdk_interfaces::srv::SetGoHomeAltitude;
-  using GetGoHomeAltitude = psdk_interfaces::srv::GetGoHomeAltitude;
-  using SetObstacleAvoidance = psdk_interfaces::srv::SetObstacleAvoidance;
-  using GetObstacleAvoidance = psdk_interfaces::srv::GetObstacleAvoidance;
+  using SetHomeFromGPS = brain_box_msgs::srv::SetHomeFromGPS;
+  using SetGoHomeAltitude = brain_box_msgs::srv::SetGoHomeAltitude;
+  using GetGoHomeAltitude = brain_box_msgs::srv::GetGoHomeAltitude;
+  using SetObstacleAvoidance = brain_box_msgs::srv::SetObstacleAvoidance;
+  using GetObstacleAvoidance = brain_box_msgs::srv::GetObstacleAvoidance;
 
   /**
    * @brief Construct a new FlightControlModule object

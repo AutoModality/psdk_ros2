@@ -35,6 +35,7 @@
 #include "psdk_interfaces/srv/perception_stereo_vision_setup.hpp"
 //brain_msgs
 #include "brain_box_msgs/msg/perception_camera_parameters.hpp"
+#include "brain_box_msgs/srv/perception_stereo_vision_setup.hpp"
 
 namespace psdk_ros2
 {
@@ -43,7 +44,7 @@ class PerceptionModule : public rclcpp_lifecycle::LifecycleNode
 {
  public:
   using PerceptionStereoVisionSetup =
-      psdk_interfaces::srv::PerceptionStereoVisionSetup;
+      brain_box_msgs::srv::PerceptionStereoVisionSetup;
 
   /**
    * @brief Construct a new PerceptionModule object

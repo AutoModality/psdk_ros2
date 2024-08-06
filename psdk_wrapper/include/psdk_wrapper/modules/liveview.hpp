@@ -28,7 +28,7 @@
 #include <shared_mutex>
 #include <string>
 
-#include "psdk_interfaces/srv/camera_setup_streaming.hpp"
+#include "brain_box_msgs/srv/camera_setup_streaming.hpp"
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 
 namespace psdk_ros2
@@ -37,7 +37,7 @@ namespace psdk_ros2
 class LiveviewModule : public rclcpp_lifecycle::LifecycleNode
 {
  public:
-  using CameraSetupStreaming = psdk_interfaces::srv::CameraSetupStreaming;
+  using CameraSetupStreaming = brain_box_msgs::srv::CameraSetupStreaming;
 
   /**
    * @brief Construct a new LiveviewModule object
