@@ -328,7 +328,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   };
   struct CopterState
   {
-    psdk_interfaces::msg::PositionFused local_position;
+    brain_box_msgs::msg::PositionFused local_position;
     sensor_msgs::msg::NavSatFix gps_position;
     tf2::Quaternion attitude;
     geometry_msgs::msg::Vector3Stamped gimbal_angles;
@@ -1029,7 +1029,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Imu>::SharedPtr
       imu_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
-      psdk_interfaces::msg::PositionFused>::SharedPtr position_fused_pub_;
+      brain_box_msgs::msg::PositionFused>::SharedPtr position_fused_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
   rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::NavSatFix>::SharedPtr
@@ -1122,7 +1122,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   float local_altitude_reference_{0};
   bool local_altitude_reference_set_{false};
   geometry_msgs::msg::Vector3Stamped local_position_reference_;
-  bool set_local_position_ref_{false};
+  bool set_local_position_ref_{true};
 
   T_DjiAircraftInfoBaseInfo aircraft_base_;
   E_DjiCameraType camera_type_;

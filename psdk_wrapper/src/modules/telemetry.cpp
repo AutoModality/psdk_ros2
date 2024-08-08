@@ -50,7 +50,7 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
   velocity_ground_fused_pub_ =
       create_publisher<geometry_msgs::msg::Vector3Stamped>(
           "psdk_ros2/velocity_ground_fused", 10);
-  position_fused_pub_ = create_publisher<psdk_interfaces::msg::PositionFused>(
+  position_fused_pub_ = create_publisher<brain_box_msgs::msg::PositionFused>(
       "psdk_ros2/position_fused", 10);
   odom_pub_ = create_publisher<nav_msgs::msg::Odometry>(
       "psdk_ros2/odom", 10);
@@ -988,7 +988,7 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
    */
   tf2::Vector3 position_NED{position_vo->x, position_vo->y, position_vo->z};
   tf2::Vector3 position_ENU = psdk_utils::R_NED2ENU * position_NED;
-  psdk_interfaces::msg::PositionFused position_msg;
+  brain_box_msgs::msg::PositionFused position_msg;
   nav_msgs::msg::Odometry odometry_msg;
   position_msg.header.stamp = this->get_clock()->now();
   position_msg.header.frame_id = params_.map_frame;
@@ -1014,6 +1014,8 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
   position_msg.position.z =
       position_msg.position.z - get_local_altitude_reference();
 
+  odometry_msg.pose.pose.position.z =
+      odometry_msg.pose.pose.position.z - get_local_altitude_reference();
   // Save current local position
   {
     std::unique_lock<std::shared_mutex> lock(current_state_mutex_);
@@ -1022,16 +1024,19 @@ TelemetryModule::vo_position_callback(const uint8_t *data, uint16_t data_size,
 
   if (set_local_position_ref_)
   {
+    odometry_msg.pose.pose.position.x =
+        position_msg.position.x - local_position_reference_.vector.x;
+    odometry_msg.pose.pose.position.y =
+        position_msg.position.y - local_position_reference_.vector.y;
+    odometry_msg.pose.pose.position.z =
+        position_msg.position.z - local_position_reference_.vector.z;
+
     position_msg.position.x =
         position_msg.position.x - local_position_reference_.vector.x;
     position_msg.position.y =
         position_msg.position.y - local_position_reference_.vector.y;
     position_msg.position.z =
         position_msg.position.z - local_position_reference_.vector.z;
-
-    odometry_msg.pose.pose.position.x = position_msg.position.x - local_position_reference_.vector.x;
-    odometry_msg.pose.pose.position.y = position_msg.position.y - local_position_reference_.vector.y;
-    odometry_msg.pose.pose.position.z = position_msg.position.z - local_position_reference_.vector.z;
   }
   position_fused_pub_->publish(position_msg);
   odom_pub_->publish(odometry_msg);
