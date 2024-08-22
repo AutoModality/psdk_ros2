@@ -1902,7 +1902,7 @@ TelemetryModule::home_point_altitude_callback(
               data));
 
   brain_box_msgs::msg::StampedAltimeter home_point_altitude_msg;
-  home_point_altitude_msg.header.stamped = this->get_clock()->now();
+  home_point_altitude_msg.header.stamp = this->get_clock()->now();
   home_point_altitude_msg.data = *home_point_altitude;
   home_point_altitude_pub_->publish(home_point_altitude_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
