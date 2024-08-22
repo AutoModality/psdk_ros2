@@ -1084,7 +1084,7 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<
       brain_box_msgs::msg::SingleBatteryInfo>::SharedPtr
       single_battery_index2_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::StampedAltimeter>::SharedPtr
       height_fused_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       brain_box_msgs::msg::ControlMode>::SharedPtr control_mode_pub_;

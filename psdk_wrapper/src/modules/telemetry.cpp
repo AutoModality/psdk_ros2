@@ -108,7 +108,7 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
   single_battery_index2_pub_ =
       create_publisher<brain_box_msgs::msg::SingleBatteryInfo>(
           "psdk_ros2/single_battery_index2", 10);
-  height_fused_pub_ = create_publisher<std_msgs::msg::Float32>(
+  height_fused_pub_ = create_publisher<brain_box_msgs::msg::StampedAltimeter>(
       "psdk_ros2/height_above_ground", 10);
   angular_rate_body_raw_pub_ =
       create_publisher<geometry_msgs::msg::Vector3Stamped>(
@@ -1572,7 +1572,8 @@ TelemetryModule::height_fused_callback(const uint8_t *data, uint16_t data_size,
   std::unique_ptr<T_DjiFcSubscriptionHeightFusion> height_fused =
       std::make_unique<T_DjiFcSubscriptionHeightFusion>(
           *reinterpret_cast<const T_DjiFcSubscriptionHeightFusion *>(data));
-  std_msgs::msg::Float32 height_fused_msg;
+  brain_box_msgs::msg::StampedAltimeter height_fused_msg;
+  height_fused_msg.header.stamp = this->get_clock()->now();
   height_fused_msg.data = *height_fused;
   height_fused_pub_->publish(height_fused_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
