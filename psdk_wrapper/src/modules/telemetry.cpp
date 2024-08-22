@@ -134,11 +134,11 @@ TelemetryModule::on_configure(const rclcpp_lifecycle::State &state)
       create_publisher<sensor_msgs::msg::NavSatFix>("psdk_ros2/home_point", 10);
   home_point_status_pub_ =
       create_publisher<std_msgs::msg::Bool>("psdk_ros2/home_point_status", 10);
-  home_point_altitude_pub_ = create_publisher<std_msgs::msg::Float32>(
+  home_point_altitude_pub_ = create_publisher<brain_box_msgs::msg::StampedAltimeter>(
       "psdk_ros2/home_point_altitude", 10);
-  altitude_sl_pub_ = create_publisher<std_msgs::msg::Float32>(
+  altitude_sl_pub_ = create_publisher<brain_box_msgs::msg::StampedAltimeter>(
       "psdk_ros2/altitude_sea_level", 10);
-  altitude_barometric_pub_ = create_publisher<std_msgs::msg::Float32>(
+  altitude_barometric_pub_ = create_publisher<brain_box_msgs::msg::StampedAltimeter>(
       "psdk_ros2/altitude_barometric", 10);
 
   // Create TF broadcasters
@@ -1762,7 +1762,8 @@ TelemetryModule::altitude_sl_callback(const uint8_t *data, uint16_t data_size,
       std::make_unique<T_DjiFcSubscriptionAltitudeFused>(
           *reinterpret_cast<const T_DjiFcSubscriptionAltitudeFused *>(data));
 
-  std_msgs::msg::Float32 altitude_sl_fused_msg;
+  brain_box_msgs::msg::StampedAltemeter altitude_sl_fused_msg;
+  altitude_sl_fused_msg.header.stamp = this->get_clock()->now();
   altitude_sl_fused_msg.data = *altitude_sl_fused;
   altitude_sl_pub_->publish(altitude_sl_fused_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
@@ -1780,7 +1781,8 @@ TelemetryModule::altitude_barometric_callback(
           *reinterpret_cast<const T_DjiFcSubscriptionAltitudeBarometer *>(
               data));
 
-  std_msgs::msg::Float32 altitude_barometric_msg;
+  brain_box_msgs::msg::StampedAltemeter altitude_barometric_msg;
+  altitude_barometric_msg.header.stamp = this->get_clock()->now();
   altitude_barometric_msg.data = *altitude_barometric;
   altitude_barometric_pub_->publish(altitude_barometric_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
@@ -1899,7 +1901,8 @@ TelemetryModule::home_point_altitude_callback(
           *reinterpret_cast<const T_DjiFcSubscriptionAltitudeOfHomePoint *>(
               data));
 
-  std_msgs::msg::Float32 home_point_altitude_msg;
+  brain_box_msgs::msg::StampedAltimeter home_point_altitude_msg;
+  home_point_altitude_msg.header.stamped = this->get_clock()->now();
   home_point_altitude_msg.data = *home_point_altitude;
   home_point_altitude_pub_->publish(home_point_altitude_msg);
   return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;

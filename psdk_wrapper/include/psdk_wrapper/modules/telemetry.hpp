@@ -75,6 +75,7 @@
 #include "brain_box_msgs/msg/relative_obstacle_info.hpp"
 #include "brain_box_msgs/msg/rtk_yaw.hpp"
 #include "brain_box_msgs/msg/single_battery_info.hpp"
+#include <brain_box_msgs/msg/stamped_altimeter.hpp>
 namespace psdk_ros2
 {
 class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
@@ -1104,11 +1105,11 @@ class TelemetryModule : public rclcpp_lifecycle::LifecycleNode
   rclcpp_lifecycle::LifecyclePublisher<
       brain_box_msgs::msg::RelativeObstacleInfo>::SharedPtr
       relative_obstacle_info_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::StampedAltimeter>::SharedPtr
       altitude_sl_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::StampedAltimeter>::SharedPtr
       altitude_barometric_pub_;
-  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
+  rclcpp_lifecycle::LifecyclePublisher<brain_box_msgs::msg::StampedAltimeter>::SharedPtr
       home_point_altitude_pub_;
   rclcpp_lifecycle::LifecyclePublisher<
       geometry_msgs::msg::Vector3Stamped>::SharedPtr gimbal_angles_pub_;
