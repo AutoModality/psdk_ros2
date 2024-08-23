@@ -261,10 +261,17 @@ PSDKWrapper::set_environment()
   T_DjiReturnCode return_code;
   T_DjiOsalHandler osal_handler = {0};
   T_DjiHalUartHandler uart_handler = {0};
+
+  T_DjiHalUsbBulkHandler usb_bulk_handler = {0};
+  T_DjiLoggerConsole print_console;
+  T_DjiLoggerConsole local_record_console;
   T_DjiFileSystemHandler file_system_handler = {0};
   T_DjiSocketHandler socket_handler{0};
+  T_DjiHalNetworkHandler network_handler = {0};
   T_DjiUserLinkConfig linkConfig;
-
+  network_handler.NetworkInit = HalNetWork_Init;
+  network_handler.NetworkDeInit = HalNetWork_DeInit;
+  network_handler.NetworkGetDeviceInfo = HalNetWork_GetDeviceInfo;
   socket_handler.Socket = Osal_Socket;
   socket_handler.Bind = Osal_Bind;
   socket_handler.Close = Osal_Close;
@@ -275,7 +282,6 @@ PSDKWrapper::set_environment()
   socket_handler.TcpConnect = Osal_TcpConnect;
   socket_handler.TcpSendData = Osal_TcpSendData;
   socket_handler.TcpRecvData = Osal_TcpRecvData;
-
   osal_handler.TaskCreate = Osal_TaskCreate;
   osal_handler.TaskDestroy = Osal_TaskDestroy;
   osal_handler.TaskSleepMs = Osal_TaskSleepMs;
@@ -293,13 +299,22 @@ PSDKWrapper::set_environment()
   osal_handler.GetTimeMs = Osal_GetTimeMs;
   osal_handler.GetTimeUs = Osal_GetTimeUs;
   osal_handler.GetRandomNum = Osal_GetRandomNum;
-
+  print_console.func = DjiUser_PrintConsole;
+  print_console.consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_INFO;
+  print_console.isSupportColor = true;
+  local_record_console.consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_DEBUG;
+  local_record_console.func = DjiUser_LocalWrite;
+  local_record_console.isSupportColor = false;
   uart_handler.UartInit = HalUart_Init;
   uart_handler.UartDeInit = HalUart_DeInit;
   uart_handler.UartWriteData = HalUart_WriteData;
   uart_handler.UartReadData = HalUart_ReadData;
   uart_handler.UartGetStatus = HalUart_GetStatus;
-
+  usb_bulk_handler.UsbBulkInit = HalUsbBulk_Init;
+  usb_bulk_handler.UsbBulkDeInit = HalUsbBulk_DeInit;
+  usb_bulk_handler.UsbBulkWriteData = HalUsbBulk_WriteData;
+  usb_bulk_handler.UsbBulkReadData = HalUsbBulk_ReadData;
+  usb_bulk_handler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
   file_system_handler.FileOpen = Osal_FileOpen;
   file_system_handler.FileClose = Osal_FileClose;
   file_system_handler.FileWrite = Osal_FileWrite;
@@ -309,11 +324,11 @@ PSDKWrapper::set_environment()
   file_system_handler.DirOpen = Osal_DirOpen;
   file_system_handler.DirClose = Osal_DirClose;
   file_system_handler.DirRead = Osal_DirRead;
+
   file_system_handler.Mkdir = Osal_Mkdir;
   file_system_handler.Unlink = Osal_Unlink;
   file_system_handler.Rename = Osal_Rename;
   file_system_handler.Stat = Osal_Stat;
-
   return_code = DjiPlatform_RegOsalHandler(&osal_handler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
@@ -323,7 +338,6 @@ PSDKWrapper::set_environment()
     return false;
   }
   RCLCPP_INFO(get_logger(), "Registered OSAL handler");
-
   return_code = DjiPlatform_RegHalUartHandler(&uart_handler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
@@ -332,7 +346,6 @@ PSDKWrapper::set_environment()
     return false;
   }
   RCLCPP_INFO(get_logger(), "Registered HAL handler");
-
   return_code = DjiUserConfigManager_LoadConfiguration(
       params_.link_config_file_path.c_str());
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
@@ -347,12 +360,6 @@ PSDKWrapper::set_environment()
   if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_USB_BULK_DEVICE)
   {
     RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_USB_BULK_DEVICE");
-    T_DjiHalUsbBulkHandler usb_bulk_handler;
-    usb_bulk_handler.UsbBulkInit = HalUsbBulk_Init;
-    usb_bulk_handler.UsbBulkDeInit = HalUsbBulk_DeInit;
-    usb_bulk_handler.UsbBulkWriteData = HalUsbBulk_WriteData;
-    usb_bulk_handler.UsbBulkReadData = HalUsbBulk_ReadData;
-    usb_bulk_handler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
     return_code = DjiPlatform_RegHalUsbBulkHandler(&usb_bulk_handler);
     if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
     {
@@ -365,10 +372,6 @@ PSDKWrapper::set_environment()
   else if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_NETWORK_DEVICE)
   {
     RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_AND_NETWORK_DEVICE");
-    T_DjiHalNetworkHandler network_handler;
-    network_handler.NetworkInit = HalNetWork_Init;
-    network_handler.NetworkDeInit = HalNetWork_DeInit;
-    network_handler.NetworkGetDeviceInfo = HalNetWork_GetDeviceInfo;
     return_code = DjiPlatform_RegHalNetworkHandler(&network_handler);
     if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
     {
@@ -382,22 +385,39 @@ PSDKWrapper::set_environment()
   {
     RCLCPP_INFO(get_logger(), "Using DJI_USE_ONLY_UART");
   }
-
   return_code = DjiPlatform_RegSocketHandler(&socket_handler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     RCLCPP_ERROR(get_logger(),
                  "Register OSAL SOCKET handler error. Error code is: %ld",
                  return_code);
+
     return false;
   }
-
   return_code = DjiPlatform_RegFileSystemHandler(&file_system_handler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     RCLCPP_ERROR(get_logger(),
                  "Register OSAL filesystem handler error.Error code is: %ld",
                  return_code);
+    return false;
+  }
+  if (DjiUser_LocalWriteFsInit("Logs/DJI") !=
+      DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  {
+    RCLCPP_ERROR(get_logger(), "File system init error.");
+    return false;
+  }
+  return_code = DjiLogger_AddConsole(&print_console);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  {
+    RCLCPP_ERROR(get_logger(), "Add printf console error.");
+    return false;
+  }
+  return_code = DjiLogger_AddConsole(&local_record_console);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  {
+    RCLCPP_ERROR(get_logger(), "Add printf console error.");
     return false;
   }
   RCLCPP_INFO(get_logger(), "Environment has been set!");
@@ -721,5 +741,141 @@ PSDKWrapper::transition_modules_to_state(LifecycleState state)
   }
   return true;
 }
+
+T_DjiReturnCode
+PSDKWrapper::DjiUser_PrintConsole(const uint8_t *data, uint16_t dataLen)
+{
+  printf("%s", data);
+
+  return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+}
+
+T_DjiReturnCode
+PSDKWrapper::DjiUser_LocalWrite(const uint8_t *data, uint16_t dataLen)
+{
+  int32_t realLen;
+
+  if (s_djiLogFile == nullptr)
+  {
+    return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+  }
+
+  realLen = fwrite(data, 1, dataLen, s_djiLogFile);
+  fflush(s_djiLogFile);
+  if (realLen == dataLen)
+  {
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+  }
+  else
+  {
+    return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+  }
+}
+
+T_DjiReturnCode
+PSDKWrapper::DjiUser_LocalWriteFsInit(const char *path)
+{
+  T_DjiReturnCode djiReturnCode = DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+  char filePath[DJI_LOG_PATH_MAX_SIZE];
+  char systemCmd[DJI_SYSTEM_CMD_STR_MAX_SIZE];
+  char folderName[DJI_LOG_FOLDER_NAME_MAX_SIZE];
+  time_t currentTime = time(nullptr);
+  struct tm *localTime = localtime(&currentTime);
+  uint16_t logFileIndex = 0;
+  uint16_t currentLogFileIndex;
+  uint8_t ret;
+
+  if (localTime == nullptr)
+  {
+    printf("Get local time error.\r\n");
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+  }
+
+  if (access(DJI_LOG_FOLDER_NAME, F_OK) != 0)
+  {
+    sprintf(folderName, "mkdir %s", DJI_LOG_FOLDER_NAME);
+    ret = system(folderName);
+    if (ret != 0)
+    {
+      printf("Create new log folder error, ret:%d.\r\n", ret);
+      return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
+  }
+
+  s_djiLogFileCnt = fopen(DJI_LOG_INDEX_FILE_NAME, "rb+");
+  if (s_djiLogFileCnt == nullptr)
+  {
+    s_djiLogFileCnt = fopen(DJI_LOG_INDEX_FILE_NAME, "wb+");
+    if (s_djiLogFileCnt == nullptr)
+    {
+      return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
+  }
+  else
+  {
+    ret = fseek(s_djiLogFileCnt, 0, SEEK_SET);
+    if (ret != 0)
+    {
+      printf("Seek log count file error, ret: %d, errno: %d.\r\n", ret, errno);
+      return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
+
+    ret =
+        fread((uint16_t *)&logFileIndex, 1, sizeof(uint16_t), s_djiLogFileCnt);
+    if (ret != sizeof(uint16_t))
+    {
+      printf("Read log file index error.\r\n");
+    }
+  }
+
+  currentLogFileIndex = logFileIndex;
+  logFileIndex++;
+
+  ret = fseek(s_djiLogFileCnt, 0, SEEK_SET);
+  if (ret != 0)
+  {
+    printf("Seek log file error, ret: %d, errno: %d.\r\n", ret, errno);
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+  }
+
+  ret = fwrite((uint16_t *)&logFileIndex, 1, sizeof(uint16_t), s_djiLogFileCnt);
+  if (ret != sizeof(uint16_t))
+  {
+    printf("Write log file index error.\r\n");
+    fclose(s_djiLogFileCnt);
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+  }
+
+  fclose(s_djiLogFileCnt);
+
+  sprintf(filePath, "%s_%04d_%04d%02d%02d_%02d-%02d-%02d.log", path,
+          currentLogFileIndex, localTime->tm_year + 1900, localTime->tm_mon + 1,
+          localTime->tm_mday, localTime->tm_hour, localTime->tm_min,
+          localTime->tm_sec);
+
+  s_djiLogFile = fopen(filePath, "wb+");
+  if (s_djiLogFile == nullptr)
+  {
+    USER_LOG_ERROR("Open filepath time error.");
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+  }
+
+  if (logFileIndex >= DJI_LOG_MAX_COUNT)
+  {
+    sprintf(systemCmd, "rm -rf %s_%04d*.log", path,
+            currentLogFileIndex - DJI_LOG_MAX_COUNT);
+    ret = system(systemCmd);
+    if (ret != 0)
+    {
+      printf("Remove file error, ret:%d.\r\n", ret);
+      return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
+  }
+
+  return djiReturnCode;
+}
+
+FILE *PSDKWrapper::s_djiLogFile = nullptr;
+FILE *PSDKWrapper::s_djiLogFileCnt = 0;
 
 }  // namespace psdk_ros2
