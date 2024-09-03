@@ -911,7 +911,7 @@ FlightControlModule::flight_control_generic_cb(
   float x_setpoint = msg->axes[0];
   float y_setpoint = msg->axes[1];
   float z_setpoint = msg->axes[2];
-  float yaw_setpoint = (uint8_t)(msg->axes[3]);
+  float yaw_setpoint = msg->axes[3];
   uint8_t flag = msg->axes[4];
 
   uint8_t HORI = (flag & 0xC0);
