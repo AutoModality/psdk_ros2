@@ -46,7 +46,7 @@
         gps_data: 5
         rtk_data: 5
         magnetometer: 50
-        rc_channels_data: 1
+        rc_channels_data: 50
         gimbal_data: 1
         flight_status: 1
         battery_level: 1
