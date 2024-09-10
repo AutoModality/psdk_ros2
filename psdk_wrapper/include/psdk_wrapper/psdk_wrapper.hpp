@@ -51,26 +51,6 @@
 #include "psdk_wrapper/utils/psdk_wrapper_utils.hpp"
 
 
-#include <dji_platform.h>
-#include <dji_logger.h>
-#include <dji_core.h>
-#include <csignal>
-#include "dji_typedef.h"
-
-
-#define DJI_LOG_PATH                    "Logs/DJI"
-#define DJI_LOG_INDEX_FILE_NAME         "Logs/latest"
-#define DJI_LOG_FOLDER_NAME             "Logs"
-#define DJI_LOG_PATH_MAX_SIZE           (128)
-#define DJI_LOG_FOLDER_NAME_MAX_SIZE    (32)
-#define DJI_SYSTEM_CMD_STR_MAX_SIZE     (64)
-#define DJI_LOG_MAX_COUNT               (10)
-
-#define USER_UTIL_UNUSED(x)                                 ((x) = (x))
-#define USER_UTIL_MIN(a, b)                                 (((a) < (b)) ? (a) : (b))
-#define USER_UTIL_MAX(a, b)                                 (((a) > (b)) ? (a) : (b))
-
-
 namespace psdk_ros2
 {
 /**
@@ -130,12 +110,6 @@ class PSDKWrapper : public rclcpp_lifecycle::LifecycleNode
    * @return CallbackReturn SUCCESS or FAILURE
    */
   CallbackReturn on_shutdown(const rclcpp_lifecycle::State& state) override;
-
-  static T_DjiReturnCode DjiUser_PrintConsole(const uint8_t *data, uint16_t dataLen);
-  static T_DjiReturnCode DjiUser_LocalWrite(const uint8_t *data, uint16_t dataLen);
-  static T_DjiReturnCode DjiUser_LocalWriteFsInit(const char *path);
-  static FILE *s_djiLogFile;
-  static FILE *s_djiLogFileCnt;
 
  private:
   struct PSDKParams
